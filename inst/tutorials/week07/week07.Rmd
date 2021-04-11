@@ -18,13 +18,29 @@ ep_elections
 
 ## Introduction
 
-This week we have talked about data visualization. 
+This week we have talked about all things data visualization with **ggplot2** and how visualization can help us to explore our data and relationships between variables. 
 
-Insert a bit more of intro prose here.
+In this tutorial, you'll refresh and review some of the things you have learned this week.
+
+### Packages
+
+For the following exercises, you'll need the **tidyverse** package. You should already have this package installed, so go ahead and load it:
+
+```{r load-packages, exercise=TRUE}
+
+```
+
+```{r load-packages-solution}
+library(tidyverse)
+```
+
+```{r load-packages-check}
+grade_this_code("The tidyverse is now loaded!")
+```
 
 ## Data
 
-The data for this week is called `ep_elections` and is already loaded into the environment. It contains information on voter turnout and total votes cast in elections for the European Parliament. You will use this data to visualise some information and gain a few more insights into the data.
+The data set for this tutorial (`ep_elections`) contains information on voter turnout and the number of total votes cast in elections to the European Parliament. You will use this data set later to visually explore voter turnout in European Parliament elections.
 
 Below you find an overview of the data set.
 
@@ -36,16 +52,38 @@ Below you find an overview of the data set.
 | `voter_turnout` | Voter turnout in %
 | `total_vote` | Total number of voters who have turned out
 
+The data for this week is called `ep_elections` and is already loaded into the environment. It contains information on voter turnout and total votes cast in elections for the European Parliament. You will use this data to visualise some information and gain a few more insights into the data.
 
 ### First look at the data
 
-You can take a peek at the data using the `glimpse()` function in the box below.
+You can take a peek at the data using the box below.
 
-```{r glimpse-data, exercise=TRUE}
-glimpse(ep_elections)
+```{r explore-data, exercise=TRUE}
+
 ```
 
+To get a better idea of turnout in European Parliament elections, calculate the average voter turnout across all countries and elections in the data set.
 
+```{r exercise-calculate-mean, exercise=TRUE}
+
+```
+
+```{r exercise-calculate-mean-sol, echo=FALSE, eval=FALSE}
+# dplyr
+ep_elections %>% summarize(mean = mean(voter_turnout))
+
+# base R
+mean(ep_elections$voter_turnout)
+```
+
+```{r question-mean-turnout, echo=FALSE}
+question_text(
+  "How high is the average voter turnout across all countries and elections in the data set? Enter the number, rounded to the nearest integer.",
+  answer("51", correct = TRUE),
+  allow_retry = TRUE,
+  incorrect = "Not quite. Have you rounded the number to the nearest integer?"
+)
+```
 
 ## Exercises
 
@@ -53,9 +91,9 @@ glimpse(ep_elections)
 
 ```{r question-covariation, echo=FALSE}
 question("Which of the following plots is suited to present the covariation of a categorical and a continuous variable?",
-  answer("Boxplot", correct = TRUE),
-  answer("Barplot", message = "A barplot is usually used to present the variation of a single categorical variable. If you need help, check Wickham/Grolemund (2017) Chapter 7 or the lecture material."),
-  answer("Scatterplot", message = "A scatterplot is usually used to present the covariation of two continuous variables. If you need help, check Wickham/Grolemund (2017) Chapter 7 or the lecture material."),
+  answer("Box plot", correct = TRUE),
+  answer("Bar plot", message = "A bar plot is usually used to present the variation of a single categorical variable. If you need help, check Wickham/Grolemund (2017) Chapter 7 or the lecture material."),
+  answer("Scatter plot", message = "A scatter plot is usually used to present the covariation of two continuous variables. If you need help, check Wickham/Grolemund (2017) Chapter 7 or the lecture material."),
   allow_retry = TRUE,
   random_answer_order = TRUE
 )
@@ -88,7 +126,7 @@ question("What kind of figure does \"geom_jitter()\" create?",
 ### Faceting
 
 ```{r question-facet-grid, echo=FALSE}
-question("What does the \"facet_grid()\" function do?",
+question("What does the \"facet_wrap()\" function do?",
   answer("It allows you to visualize subsets of data in a grid based on the values of a categorical variable.", correct = TRUE),
   answer("It adds a grid to your figure.", message = "The grid is an element of the theme. Check the lecture material for an overview of ggplot2's built-in themes or \"help(theme)\" to learn more about how to customize the grid in your figure."),
   answer("It allows you to create a grid of different types of figures.", message = "Check out the \"patchwork\" package to learn how to combine separate ggplots in one figure."),
@@ -100,10 +138,10 @@ question("What does the \"facet_grid()\" function do?",
 ### Legends
 
 ```{r question-lineplot, echo=FALSE}
-question("You want to create a lineplot. Each line is supposed to correspond to a certain value in a categorical variable in your data set. You specify \"color = categorical_variable\" but you have 50 different values in your categorical variable and the legend becomes extremely large. How do you hide the legend from the figure?",
-  answer("You add \"+ theme(legend.position = \"none\")\" to your ggplot2 syntax.", correct = TRUE),
-  answer("You add \"+ theme(legend.title = element_blank())\" to your ggplot2 syntax.", message = "This will only remove the title of the legend, not the legend itself. If you need help, check the lab material."),
-  answer("You add \"+ theme(legend.title = \"none\")\" to your ggplot2 syntax.", message = "\"none\" is not a valid value for the argument \"legend.title\" and will therefore result in an error. If you need help, check the lab material."),
+question("Which of the following families of functions helps you to make specific changes to the legend of your plot?",
+  answer("scale_*", correct = TRUE),
+  answer("geom_*", message = "This determines the geometric object, i.e. the type of figure that will be plotted (e.g. a scatter plot, a box plot etc.). If you need help, check the lab material."),
+  answer("theme_*", message = "This changes the overall look of your plot and in fact has some arguments that allow you to e.g. change the position of the legend in the plot, but it does not allow you to e.g. change the labels in the legend. If you need help, check the lab material."),
   allow_retry = TRUE,
   random_answer_order = TRUE
   )
@@ -111,18 +149,23 @@ question("You want to create a lineplot. Each line is supposed to correspond to 
 
 ### European Parliament elections
 
-Let's turn to the data set for this learnr exercise: `ep_elections`. In the lab session, we have learned some commands for visualising data. Throughout the next set of questions, you will apply some of the things we have learned in class. 
+Let's come back to exploring voter turnout in European Parliament elections, using the data set for this learnr tutorial: `ep_elections`. 
 
+###
 
+Create a scatter plot of the variables *total_vote* and *voter_turnout*.
 
-Create a scatterplot of the variables *total_vote* and *voter_turnout*.
-
-```{r exercise-scatterplot, exercise=TRUE}
+```{r exercise-scatter-plot, exercise=TRUE}
 
 ```
 
-<div id="exercise-scatterplot-hint">
-**Hint:** Have you (correctly) specified the data and the mappings? The geometric object for creating a scatterplot is `geom_point()`.
+```{r exercise-scatter-plot-sol, eval=FALSE, echo=FALSE}
+ggplot(ep_elections) +
+  geom_point(aes(x = total_vote, y = voter_turnout))
+```
+
+<div id="exercise-scatter-plot-hint">
+**Hint:** Have you (correctly) specified the data and the mappings? The geometric object for creating a scatter plot is `geom_point()`.
 </div>
 
 ```{r question-scatterplot, echo=FALSE}
@@ -136,38 +179,52 @@ question("What's the relationship between the two variables?",
 
 ### Voter turnout in Germany and Austria
 
-Next, create a boxplot and compare the 50th percentile of *voter_turnout* in Germany and Austria. 
+Next, create a box plot and compare the median of *voter_turnout* in Germany and Austria. 
 
-```{r exercise-boxplot-1, exercise=TRUE}
+```{r exercise-box-plot-1, exercise=TRUE}
 
 ```
 
-<div id="exercise-boxplot-1-hint">
-**Hint:** Use `filter()` to select Germany and Austria. The geometric object for creating a boxplot is `geom_boxplot()`.
+```{r exercise-box-plot-1-sol, eval=FALSE, echo=FALSE}
+ep_elections %>%
+  filter(country %in% c("Austria", "Germany")) %>%
+  ggplot() +
+  geom_boxplot(aes(x = country, y = voter_turnout))
+```
+
+<div id="exercise-box-plot-1-hint">
+**Hint:** Use `filter()` to select Germany and Austria. The geometric object for creating a box plot is `geom_boxplot()`.
 </div>
 
 ```{r question-boxplot-1, echo=FALSE}
-question("Is the 50th percentile in Germany...?",
+question("Is the median in Germany...?",
          answer("higher than in Austria", correct = TRUE),
-         answer("lower than in Austria", message = "Have a look at your plot again. The 50th percentile is represented by the thick line within the box."),
-         answer("the same as in Austria", message = "Have a look at your plot again. The 50th percentile is represented by the thick line within the box."),
+         answer("lower than in Austria", message = "Have a look at your plot again. The median is represented by the thick line within the box."),
+         answer("the same as in Austria", message = "Have a look at your plot again. The median is represented by the thick line within the box."),
          allow_retry = TRUE
          )
 ```
 
 ### Voter turnout in the entire EU
 
-Create a boxplot for *voter_turnout* in all countries in the data set. Add a horizontal line at 60%.
+Create a box plot for *voter_turnout* in all countries in the data set. Add a horizontal line at 60%.
 
-```{r exercise-boxplot-2, exercise=TRUE}
+```{r exercise-box-plot-2, exercise=TRUE}
 
 ```
 
-<div id="exercise-boxplot-2-hint">
-**Hint:** The geometric object for creating boxplots is `geom_boxplot()`. With `geom_hline(yintercept = 60)` you can create a horizontal line at 60%.
+```{r exercise-box-plot-2-sol, eval=FALSE, echo=FALSE}
+ep_elections %>%
+  ggplot(aes(country, voter_turnout)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 60)
+```
+
+<div id="exercise-box-plot-2-hint">
+**Hint:** The geometric object for creating box plots is `geom_boxplot()`. With `geom_hline(yintercept = 60)` you can create a horizontal line at 60%.
 </div>
 
-```{r question-boxplot-2, echo=FALSE}
+```{r question-box-plot-2, echo=FALSE}
 question_text("How many countries have a median voter turnout higher than 60%?",
          answer("5", correct = TRUE),
          incorrect = "Are you sure you only counted the countries for which the median is higher than 60%?",
